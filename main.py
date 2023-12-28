@@ -16,7 +16,7 @@ session = {}
 
 CLIENT_ID = os.getenv('SPOTIFY_API_CLIENT_ID')
 CLIENT_SECRET = os.getenv('SPOTIFY_API_CLIENT_SECRET')
-REDIRECT_URI = 'http://localhost:5000/callback'
+REDIRECT_URI = os.getenv('REDIRECT_URI')
 
 LOGOUT_URL = 'https://accounts.spotify.com/logout'
 AUTH_URL = 'https://accounts.spotify.com/authorize'
