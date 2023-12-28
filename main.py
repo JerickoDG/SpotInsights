@@ -1,6 +1,5 @@
 import urllib
 import requests
-import jsonify
 import os
 import numpy as np
 import pandas as pd
@@ -47,7 +46,7 @@ def login():
 @app.route('/callback')
 def callback():
     if 'error' in request.args:
-        return jsonify({"error": request.args['error']})
+        return "ERROR"
 
     if 'code' in request.args:
         req_body = {
