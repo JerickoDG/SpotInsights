@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>SpotInsights - Results</title>
+</head>
+<body>
+
+    <ul class="nav justify-content-end mt-2" style="margin-right: 10px;">
+        <a href="{{ url_for('logout_user') }}" class="btn btn-dark" tabindex="-1" role="button">Logout</a>
+    </ul>
+
+    <div class="container mt-5 mb-3" style="background-color: #ECECEC; padding-top: 10px; padding-bottom: 10px;">
+        <form method="POST">
+            <button type="submit" name="active_button" value="Monthly" class="btn btn-outline-secondary toggle-button {% if active_button == 'Monthly' %}active{% endif %}">Monthly</button>
+            <button type="submit" name="active_button" value="Semi-annual" class="btn btn-outline-secondary toggle-button {% if active_button == 'Semi-annual' %}active{% endif %}">Semi-annual</button>
+            <button type="submit" name="active_button" value="All-time" class="btn btn-outline-secondary toggle-button {% if active_button == 'All-time' %}active{% endif %}">All-time</button>
+        </form>
+    </div>
+
+    <div class="container mt-3" style="background-color: #ECECEC; padding-top: 30px; padding-bottom: 30px;">
+        <div class="row">
+            <!-- First sub-container -->
+            <div class="col">
+                <div style="color: #717C7D;">
+                    <center><h1>Top Artists</h1></center>
+                    <hr>
+                    {% for item in top_artists %}
+                        <p>
+                            <img src="{{ item[1] }}" width="50" height="50">
+                            <span style="padding-right: 2px;">{{ item[0] }}</span>
+                        </p>
+                        <hr>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="vr"></div>
+
+            <!-- Second sub-container -->
+            <div class="col">
+                <div style="color: #717C7D;">
+                    <center><h1>Top Tracks</h1></center>
+                    <hr>
+                    {% for item in top_tracks_and_artists %}
+                        <p>
+                            <img src="{{ item[2] }}" width="50" height="50">
+                            <span style="padding-right: 2px;">{{ item[0] }}: {{ item[1] }}</span>
+                        </p>
+                        <hr>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="vr"></div>
+
+            <!-- Third sub-container -->
+            <div class="col">
+                <div style="color: #717C7D;">
+                    <center><h1>Top Genres</h1></center>
+                    <hr>
+                    {% for item in top_genres %}
+                        <p>{{ item }}</p>
+                        <hr>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-3 mb-3" style="background-color: #ECECEC; padding-top: 10px; padding-bottom: 10px;">
+        <div>
+            <canvas id="popularityBarChart"></canvas>
+        </div>
+        <div class="bg-light mt-3 mb-3" style="padding: 10px; margin-right: 10px; margin-left: 10px;">
+            <p>&#x2022; Your most popular artist is <strong>{{ artist_popularity_bar_graph_insight_data['most_popular_artist'] }}</strong> and the least popular is <strong>{{ artist_popularity_bar_graph_insight_data['least_popular_artist'] }}</strong>.</p>
+            <p>&#x2022; Your artists' popularity score ranges from <strong>{{ artist_popularity_bar_graph_insight_data['popularity_range_low'] }} to {{ artist_popularity_bar_graph_insight_data['popularity_range_high'] }}</strong>.</p>
+            <p>&#x2022; Their average popularity score is <strong>{{ artist_popularity_bar_graph_insight_data['average_artist_popularity'] }}</strong></p>
+            <hr>
+            <small>Note: The popularity score for all artists ranges from 0 to 100</small>
+        </div>
+    </div>
+
+    <div class="container mt-3 mb-3" style="background-color: #ECECEC; padding-top: 10px; padding-bottom: 10px;">
+
+        <div class="row">
+            <div class="col">
+                <canvas id="audioFeaturesRadarChart"></canvas>
+            </div>
+            <div class="col">
+                <div class="bg-light" style="padding: 10px;">
+                    <div class="d-flex align-items-center" style="padding-bottom: 5px;">
+                        <img src="{{ url_for('static', filename='images/audio-features.png') }}" alt="Spotify Logo" style="width:40px; height:40px; margin-right:10px;">
+                        <h3>Audio Features</h3>
+                    </div>
+                    <p>&#x2022; Acousticness - is it acoustic guitar-sy? </p>
+                    <p>&#x2022; Danceability - does it make you dance? </p>
+                    <p>&#x2022; Energy - does it sound intense (i.e., fast, loud, noisy)?</p>
+                    <p>&#x2022; Instrumentalness - does it contain much words or fillers like "Ooh" and "aah"?</p>
+                    <p>&#x2022; Liveness - are there audiences in the track?</p>
+                    <p>&#x2022; Loudness - is the track head-splitting?</p>
+                    <p>&#x2022; Speechiness - are there spoken words in the track?</p>
+                    <p>&#x2022; Valence - does the track convey positiveness?</p>
+                    <p>&#x2022; Tempo - is it fast?</p>
+                    <p>&#x2022; Duration (ms) - does it last long?</p>
+                    <hr>
+                    <small><p>Note(s):</p></small>
+                    <small><p>&#x2022; Click the legend elements in the radar chart to filter time periods</p></small>
+                    <small><p>&#x2022; Values were normalized (min = 0.0; max = 1.0) to find the average value shown from specific time periods</p></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-3 mb-3" style="background-color: #ECECEC; padding-top: 10px; padding-bottom: 10px;">
+
+        <div class="row">
+            <div class="col bg-light text-dark" style="margin-left: 10px; padding-top: 10px;">
+                <div class="d-flex align-items-center">
+                    <img src="{{ url_for('static', filename='images/positive.png') }}" alt="Spotify Logo" style="width:40px; height:40px; margin-right:10px;">
+                    <h3>Positively Correlated Features</h3>
+                </div>
+                <hr>
+                {% for data in correlation_insight_data %}
+                    {% if data[2] == 'positive' %}
+                        <p>&#x2022; {{ data[0] }} and {{ data[1] }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="col bg-dark text-white" style="margin-right: 10px; padding-top: 10px;">
+                <div class="d-flex align-items-center">
+                    <img src="{{ url_for('static', filename='images/negative.png') }}" alt="Spotify Logo" style="width:40px; height:40px; margin-right:10px;">
+                    <h3>Negatively Correlated Features</h3>
+                </div>
+                <hr>
+                {% for data in correlation_insight_data %}
+                    {% if data[2] == 'negative' %}
+                        <p>&#x2022; {{ data[0] }} and {{ data[1] }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="mt-3" style="padding: 10px; margin-right: 10px; margin-left: 10px;">
+                <hr>
+                <small><p>Note(s):</p></small>
+                <small><p>&#x2022; Pearson Correlation was applied </p></small>
+                <small><p>&#x2022; A threshold of +/-0.90 was considered </p></small>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <center><p>Made by Jericko De Guzman</p></center>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Udemology/chartjs-plugin-sorting@main/chartjs-plugin-sorting.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const buttons = document.querySelectorAll('.toggle-button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+
+    <script>
+        Chart.register(ChartjsPluginSorting);
+        const ctx = document.getElementById('popularityBarChart');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ top_artists_names | safe }},
+                datasets: [{
+                label: 'Artist Popularity Score',
+                data: {{ top_artists_popularity | safe }},
+                borderWidth: 1,
+                backgroundColor: 'black',
+                borderColor: 'rgba(0, 0, 0, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                indexAxis: 'y',
+                scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100
+                    }
+                },
+            },
+            plugins: {
+                autocolors: false,
+                annotation: {
+                    annotations: {
+                        label1: {
+                            type: 'label',
+                            xValue: 2.5,
+                            yValue: 60,
+                            backgroundColor: 'rgba(245,245,245)',
+                            content: ['This is my text', 'This is my text, second line'],
+                            font: {
+                                size: 18
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+    <script>
+        const radar_chart = document.getElementById('audioFeaturesRadarChart');
+
+        new Chart(radar_chart, {
+            type: 'radar',
+            data: {
+                labels: {{ audio_features | safe }},
+                datasets: [
+                    {
+                        label: 'Monthly',
+                        data: {{ mean_audio_features_short_term | safe }},
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Semi-annual',
+                        data: {{ mean_audio_features_medium_term | safe }},
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'All-time',
+                        data: {{ mean_audio_features_long_term | safe }},
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                elements: {
+                    line: {
+                        borderWidth: 3
+                    }
+                },
+                scale: {
+                    min: 0.0,
+                    max: 1.0
+                }
+            }
+        });
+    </script>
+</body>
+</html>
