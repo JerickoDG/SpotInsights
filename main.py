@@ -100,6 +100,7 @@ def get_results():
     response_top_artists = requests.get(f"{API_BASE_URL}" + 'me/top/artists' + f'?time_range={time_range}&limit=10', headers=headers)
     top_artists = response_top_artists.json()
 
+
     # Create a list tuple of tracks and their corresponding artist(s)
     top_tracks_and_artists = []
     for track_info in top_tracks['items']:
@@ -109,8 +110,13 @@ def get_results():
     top_artist_genres = []
     list_of_top_artists = []
     for artist_info in top_artists['items']:
-        list_of_top_artists.append((artist_info['name'], artist_info['images'][2]['url'], artist_info['popularity']))
-        top_artist_genres.extend(artist_info['genres'])
+        # Skip those items with no information
+        # Might be due to copyright issues
+        try:
+            list_of_top_artists.append((artist_info['name'], artist_info['images'][2]['url'], artist_info['popularity']))
+            top_artist_genres.extend(artist_info['genres'])
+        except Exception as error:
+            print(error)
     
     sorted_list_of_top_artist_by_popularity =  sorted(list_of_top_artists, key=lambda x: x[2])
     most_popular_artist = sorted_list_of_top_artist_by_popularity[-1][0] # Get the name 
